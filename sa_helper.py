@@ -80,6 +80,15 @@ def neighbor(tp):
             sol[i] = sol[i] + np.random.randint(0, 10)
         else :
             sol[i] = sol[i] - np.random.randint(0, 10)
-    print(sol)
+    print("Network Layers -:", sol)
 
     return tuple(sol)
+
+def neighbor_3(tp):
+    new_sol = [tp[0]] 
+    for i in range(np.random.randint(0, 10)):
+        new_sol.append(np.random.randint(0, 30))
+    new_sol.append(tp[-1])
+    print("Network Layers -:", new_sol)
+
+    return tuple(new_sol )
