@@ -1,11 +1,10 @@
-## Generate a contour plot
-# Import some other libraries that we'll need
-# matplotlib and numpy packages must also be installed
 import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 import math
+import h5py
+
 
 # define objective function
 def f(x):
@@ -17,37 +16,13 @@ def f(x):
 # Start location
 x_start = [0.8, -0.5]
 
-# Design variables at mesh points
-i1 = np.arange(-1.0, 1.0, 0.01)
-i2 = np.arange(-1.0, 1.0, 0.01)
-x1m, x2m = np.meshgrid(i1, i2)
-fm = np.zeros(x1m.shape)
-for i in range(x1m.shape[0]):
-    for j in range(x1m.shape[1]):
-        fm[i][j] = 0.2 + x1m[i][j]**2 + x2m[i][j]**2 \
-             - 0.1*math.cos(6.0*3.1415*x1m[i][j]) \
-             - 0.1*math.cos(6.0*3.1415*x2m[i][j])
-
-# Create a contour plot
-plt.figure()
-# Specify contour lines
-#lines = range(2,52,2)
-# Plot contours
-CS = plt.contour(x1m, x2m, fm)#,lines)
-# Label contours
-plt.clabel(CS, inline=1, fontsize=10)
-# Add some text to the plot
-plt.title('Non-Convex Function')
-plt.xlabel('x1')
-plt.ylabel('x2')
-
 ##################################################
 # Simulated Annealing
 ##################################################
 # Number of cycles
-n = 50
+n = 5
 # Number of trials per cycle
-m = 50
+m = 10
 # Number of accepted solutions
 na = 0.0
 # Probability of accepting worse solution at the start
