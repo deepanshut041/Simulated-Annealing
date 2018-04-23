@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pickle
+import h5py
 
 
 def sigmoid(Z):
@@ -76,32 +76,21 @@ def sigmoid_backward(dA, cache):
     
     return dZ
 
-def unpickle(file):
-    with open(file, 'rb') as fo:
-        dic = pickle.load(fo, encoding='bytes')
-    return dic
 
 def load_data():
-    train_file = "dataset/data_batch_1"
-    test_file = "dataset/test_batch"
-    meta_file = "dataset/batches.meta"
+    train_dataset = h5py.File('dataset2/train_catvnoncat.h5', "r")
+    train_set_x_orig = np.array(train_dataset["train_set_x"][:]) # your train set features
+    train_set_y_orig = np.array(train_dataset["train_set_y"][:]) # your train set labels
 
-    train_dataset = unpickle(train_file)
-    test_dataset = unpickle(test_file)
+    test_dataset = h5py.File('dataset2/test_catvnoncat.h5', "r")
+    test_set_x_orig = np.array(test_dataset["test_set_x"][:]) # your test set features
+    test_set_y_orig = np.array(test_dataset["test_set_y"][:]) # your test set labels
 
-    meta = unpickle(meta_file)
-
-    train_set_x_orig = np.array(train_dataset[b'data'][:]) # your train set features
-    train_set_y_orig = np.array(train_dataset[b'labels'][:]) # your train set labels
-
-    test_set_x_orig = np.array(test_dataset[b'data'][:]) # your test set features
-    test_set_y_orig = np.array(test_dataset[b'labels'][:]) # your test set labels
-
-    classes = np.array(meta[b'label_names'][:]) # the list of classes
+    classes = np.array(test_dataset["list_classes"][:]) # the list of classes
+    
     train_set_y_orig = train_set_y_orig.reshape((1, train_set_y_orig.shape[0]))
     test_set_y_orig = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
     
-
     return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
 
 
@@ -411,5 +400,3 @@ def predict(X, y, parameters):
     print("Accuracy: "  + str(np.sum((p == y)/m)))
         
     return p
-
-
