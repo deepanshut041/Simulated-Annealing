@@ -22,7 +22,7 @@ def L_layer_model(X, Y, layers_dims, learning_rate=0.0075, num_iterations=3000, 
     for i in range(0, num_iterations):
 
         # Forward propagation: [LINEAR -> RELU]*(L-1) -> LINEAR -> SIGMOID.
-        AL, caches = L_model_forward(X, parameters)
+        AL, caches = L_model_forward_sa(X, parameters)
         
         # Compute cost.
         cost = compute_cost(AL, Y)
@@ -76,3 +76,7 @@ print("Total size : " , sys.getsizeof(parameters['W1']) + sys.getsizeof(paramete
 
 print("Calculated total size is : " , 12288 * 50 * 20 * weight_single_cell)
 print("Total size is : " , 12288 * 50 * 20 * weight_single_cell)
+
+pred_train = predict_sa(train_x, train_y, parameters)
+
+pred_test = predict(test_x, test_y, parameters)
