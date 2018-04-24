@@ -175,10 +175,11 @@ def linear_forward(A, W, b):
     return Z, cache
 
 
-
+# This function drop connection nearly by 50% randomly which is major condition for sa algorithm
+# This is bit slow due to non usage of dot product here
 def linear_forward_sa(A, W, b):
     """
-    Implement the linear part of a layer's forward propagation.
+    Implement the linear part of a layer's forward propagation with 50% connection drops.
     Arguments:
     A -- activations from previous layer (or input data): (size of previous layer, number of examples)
     W -- weights matrix: numpy array of shape (size of current layer, size of previous layer)
@@ -188,11 +189,20 @@ def linear_forward_sa(A, W, b):
     cache -- a python dictionary containing "A", "W" and "b" ; stored for computing the backward pass efficiently
     """
     
-    Z = W.dot(A) + b
-    # for i in range(0, len(Z)):
-    #     if( np.random.rand() > .5):
-    #         Z[i] = W[i]
-    print(Z.shape, W.shape, A.shape)
+    # Zd = W.dot(A) + b
+    c = []
+    for i in range(0,len(W)):
+        temp=[]
+        for j in range(0,len(A[0])):
+            s = 0
+            for k in range(0,len(W[0])):
+                if( np.random.rand() > .5):
+                    s += W[i][k]*A[k][j]
+                else:
+                    s += W[i][k]
+            temp.append(s)
+        c.append(temp)
+    Z = np.array(c) + b
 
     assert(Z.shape == (W.shape[0], A.shape[1]))
     cache = (A, W, b)

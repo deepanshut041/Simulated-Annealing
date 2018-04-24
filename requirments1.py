@@ -6,10 +6,12 @@ import scipy
 from scipy import ndimage
 from network_helper import *
 import sys
+from random import random
+from sa_helper import *
 
 np.random.seed(1)
 
-def L_layer_model(X, Y, layers_dims, learning_rate=0.0075, num_iterations=3000, print_cost=False):
+def l_layer_model(X, Y, layers_dims, learning_rate=0.0075, num_iterations=3000, print_cost=False):
 
 
     np.random.seed(1)
@@ -67,7 +69,35 @@ n_h = int(n_x / 4)
 n_y = 1
 layers_dims = (n_x, 50, 20 , n_y)
 
-parameters = L_layer_model(train_x, train_y, layers_dims, num_iterations=200, print_cost=True)
+def anneal():
+    sol = (12288, 80, 50, 20, 1)
+    parameters = l_layer_model(train_x, train_y, layers_dims, num_iterations=200, print_cost=True)
+    old_cost = predict_accuracy(test_x, test_y, parameters)
+    T = 1.0
+    T_min = 0.00001
+    alpha = 0.9
+    lowest_cost = old_cost
+    best_model = parameters
+    while T > T_min:
+        i = 1
+        while i <= 10:
+            new_parameters = l_layer_model(train_x, train_y, layers_dims, num_iterations=200, print_cost=True)
+            new_cost = predict_accuracy(test_x, test_y, new_parameters)
+            ap = acceptance_probability(old_cost, new_cost, T)
+            if ap > random():
+                parameters = new_parameters
+                old_cost = new_cost
+            if lowest_cost > new_cost:
+                lowest_cost = new_cost
+                best_model = new_parameters
+            i += 1
+        T = T*alpha
+        print(old_cost)
+    return best_model, lowest_cost
+
+parameters, accuracy = anneal()
+
+
 print("Total size of model is equal to sum of size of its all parameters")
 print("Size of input layer: ", sys.getsizeof(parameters['W1']))
 print("Size of hidden layer 1: ", sys.getsizeof(parameters['W2']))
@@ -76,7 +106,4 @@ print("Total size : " , sys.getsizeof(parameters['W1']) + sys.getsizeof(paramete
 
 print("Calculated total size is : " , 12288 * 50 * 20 * weight_single_cell)
 print("Total size is : " , 12288 * 50 * 20 * weight_single_cell)
-
-pred_train = predict_sa(train_x, train_y, parameters)
-
-pred_test = predict(test_x, test_y, parameters)
+print("Best accuracy is", accuracy)

@@ -7,6 +7,8 @@ def anneal():
     T = 1.0
     T_min = 0.00001
     alpha = 0.9
+    lowest_cost = old_cost
+    best_sol = sol
     while T > T_min:
         i = 1
         while i <= 10:
@@ -17,7 +19,13 @@ def anneal():
                 sol = new_sol
                 old_cost = new_cost
             i += 1
+            if lowest_cost > new_cost:
+                lowest_cost = new_cost
+                best_sol = new_sol
         T = T*alpha
-    return sol, old_cost
+    return best_sol, lowest_cost
 
-print(anneal())
+best_sol, lowest_cost = anneal()
+
+print("Best Solution for project is :" ,best_sol)
+print("Lowest Cost for solution is :" ,lowest_cost)
