@@ -74,26 +74,23 @@ def anneal():
     parameters = l_layer_model(train_x, train_y, layers_dims, num_iterations=200, print_cost=True)
     old_cost = predict_accuracy(test_x, test_y, parameters)
     T = 1.0
-    T_min = 0.00001
+    T_min = 0.01
     alpha = 0.9
-    lowest_cost = old_cost
-    best_model = parameters
+    costs = []
     while T > T_min:
         i = 1
-        while i <= 10:
+        while i <= 1:
             new_parameters = l_layer_model(train_x, train_y, layers_dims, num_iterations=200, print_cost=True)
             new_cost = predict_accuracy(test_x, test_y, new_parameters)
             ap = acceptance_probability(old_cost, new_cost, T)
             if ap > random():
                 parameters = new_parameters
                 old_cost = new_cost
-            if lowest_cost > new_cost:
-                lowest_cost = new_cost
-                best_model = new_parameters
             i += 1
         T = T*alpha
+        costs.append(new_cost)
         print(old_cost)
-    return best_model, lowest_cost
+    return parameters, old_cost
 
 parameters, accuracy = anneal()
 

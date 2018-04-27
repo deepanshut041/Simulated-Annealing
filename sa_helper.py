@@ -73,6 +73,8 @@ def acceptance_probability(old_cost, new_cost, T):
     a = 2.71828 ** ((new_cost - old_cost) / T)
     return a
 
+
+# Remember there is no restriction on selecting neighbor
 def neighbor(tp):
     sol = list(tp)
     for i in range(1, len(sol)-1):
