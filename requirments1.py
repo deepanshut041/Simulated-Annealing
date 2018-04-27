@@ -9,22 +9,18 @@ import sys
 from random import random
 from sa_helper import *
 
-np.random.seed(1)
 
 def l_layer_model(X, Y, layers_dims, learning_rate=0.0075, num_iterations=3000, print_cost=False):
-
-
-    np.random.seed(1)
     costs = []
 
     # Parameters initialization.
-    parameters = initialize_parameters_deep(layers_dims)
+    parameters = initialize_parameters_deep_sa(layers_dims)
 
     # Loop (gradient descent)
     for i in range(0, num_iterations):
 
         # Forward propagation: [LINEAR -> RELU]*(L-1) -> LINEAR -> SIGMOID.
-        AL, caches = L_model_forward_sa(X, parameters)
+        AL, caches = L_model_forward(X, parameters)
         
         # Compute cost.
         cost = compute_cost(AL, Y)
@@ -61,7 +57,6 @@ print("Size required by one weight", weight_single_cell)
 print ("train_x's shape: " + str(train_x.shape))
 print("Total size of model will be require no weight in a layer * size required by one weight * Number of layers")
 print("Let we have an input layer of 12288 and two output layer of 50 and 20 weights than total size size ", 12288 * 50 * 20 * weight_single_cell)
-# print ("test_x's shape: " + str(test_x.shape))
 
 ### CONSTANTS DEFINING THE MODEL ####
 n_x = 12288    # num_px * num_px * 3
@@ -74,12 +69,14 @@ def anneal():
     parameters = l_layer_model(train_x, train_y, layers_dims, num_iterations=200, print_cost=True)
     old_cost = predict_accuracy(test_x, test_y, parameters)
     T = 1.0
-    T_min = 0.01
+    # Changes this for faster compilation 
+    T_min = 0.00001
     alpha = 0.9
     costs = []
     while T > T_min:
         i = 1
-        while i <= 1:
+        # Changes this for faster compilation 
+        while i <= 10:
             new_parameters = l_layer_model(train_x, train_y, layers_dims, num_iterations=200, print_cost=True)
             new_cost = predict_accuracy(test_x, test_y, new_parameters)
             ap = acceptance_probability(old_cost, new_cost, T)
@@ -90,9 +87,9 @@ def anneal():
         T = T*alpha
         costs.append(new_cost)
         print(old_cost)
-    return parameters, old_cost
+    return parameters, old_cost, costs
 
-parameters, accuracy = anneal()
+parameters, accuracy, costs = anneal()
 
 
 print("Total size of model is equal to sum of size of its all parameters")
@@ -104,3 +101,9 @@ print("Total size : " , sys.getsizeof(parameters['W1']) + sys.getsizeof(paramete
 print("Calculated total size is : " , 12288 * 50 * 20 * weight_single_cell)
 print("Total size is : " , 12288 * 50 * 20 * weight_single_cell)
 print("Best accuracy is", accuracy)
+
+plt.plot(costs)
+plt.ylabel('Accuracy')
+plt.xlabel('iletration')
+plt.title("Simulated Annealing")
+plt.show()

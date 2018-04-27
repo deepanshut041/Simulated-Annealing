@@ -9,16 +9,15 @@ import scipy
 from scipy import ndimage
 from network_helper import *
 
-np.random.seed(1)
 
 def L_layer_model(X, Y, layers_dims, learning_rate=0.0075, num_iterations=300, print_cost=False):
 
-
-    np.random.seed(1)
     costs = []
 
     # Parameters initialization.
-    parameters = initialize_parameters_deep(layers_dims)
+    branch_drop = np.random.rand()
+    print("Branches to be droped in this illetration ", branch_drop)
+    parameters = initialize_parameters_deep_sa(layers_dims, np.random.rand())
 
     # Loop (gradient descent)
     for i in range(0, num_iterations):
